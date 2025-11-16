@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Research Portal — Local</title>
+  <meta name="description" content="Personal research portal: save references, PDFs, tags, search, export CSV / BibTeX. Works offline." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.json" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>Research Portal</h1>
+      <p class="muted">Collect • annotate • search • export — local only</p>
+    </div>
+    <div class="quick-actions">
+      <input id="search" placeholder="Search title, authors, abstract, tags..." aria-label="Search library" />
+      <button id="newBtn">New</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel left">
+      <form id="itemForm" class="card">
+        <h2 id="formTitle">Add item</h2>
+        <label>Title <input id="title" required autocomplete="off"/></label>
+        <label>Authors <input id="authors" placeholder="Comma separated" /></label>
+        <label>Date <input id="date" type="date" /></label>
+        <label>URL <input id="url" type="url" placeholder="https://..." /></label>
+        <label>Tags <input id="tags" placeholder="e.g. ai, nlp" /></label>
+        <label>Abstract / Notes <textarea id="abstract" rows="4"></textarea></label>
+        <label>Attach PDF <input id="pdf" type="file" accept="application/pdf" /></label>
+        <div class="form-actions">
+          <button type="submit" id="saveBtn">Save</button>
+          <button type="button" id="clearBtn" class="secondary">Clear</button>
+        </div>
+      </form>
+
+      <div class="card small">
+        <h3>Import / Export</h3>
+        <input id="csvFile" type="file" accept=".csv,text/csv" />
+        <div class="row">
+          <button id="importCsv">Import CSV</button>
+          <button id="exportCsv">Export CSV</button>
+          <button id="exportBib">Export BibTeX</button>
+        </div>
+        <hr/>
+        <button id="clearAll" class="danger">Delete all local data</button>
+      </div>
+
+      <div class="card small">
+        <h3>Filters</h3>
+        <select id="tagFilter"><option value="">All tags</option></select>
+        <select id="sortBy">
+          <option value="date_desc">Sort: Newest</option>
+          <option value="date_asc">Sort: Oldest</option>
+          <option value="title_asc">Sort: Title A→Z</option>
+        </select>
+      </div>
+    </aside>
+
+    <section class="panel right">
+      <div class="toolbar">
+        <div id="count" class="muted">0 items</div>
+        <div class="spacer"></div>
+        <button id="importBtn">Choose CSV</button>
+      </div>
+
+      <div id="list" class="list"></div>
+    </section>
+  </main>
+
+  <footer class="footer muted">
+    Local-only demo • Data stored in your browser • PWA-enabled
+  </footer>
+
+  <template id="itemTpl">
+    <article class="item card">
+      <header>
+        <h3 class="item-title"></h3>
+        <div class="meta">
+          <span class="item-authors"></span>
+          <span class="item-date"></span>
+        </div>
+      </header>
+      <p class="item-abstract"></p>
+      <div class="item-tags"></div>
+      <div class="item-actions">
+        <a class="openLink" target="_blank" rel="noopener">Open URL</a>
+        <button class="viewPdf">View PDF</button>
+        <button class="editBtn">Edit</button>
+        <button class="deleteBtn danger">Delete</button>
+      </div>
+    </article>
+  </template>
+
+  <div id="pdfModal" class="modal hidden" role="dialog" aria-hidden="true">
+    <div class="modal-body card">
+      <button id="closePdf" class="close">✕</button>
+      <div id="pdfViewer">No PDF</div>
+    </div>
+  </div>
+
+  <script src="app.js" defer></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(()=>{/*sw fail*/});
+    }
+  </script>
+</body>
+</html>
